@@ -25,6 +25,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Shows situations as cards: icon, type, road, the generalPublicComment text,
@@ -40,6 +41,10 @@ public class SituationAdapter extends RecyclerView.Adapter<SituationAdapter.View
     private final List<Situation> items = new ArrayList<>();
     private final OnSituationClickListener listener;
     private String selectedId;
+    // set for distance search results, so each card can show how far away it is
+    private boolean showDistance = false;
+    private double originLat;
+    private double originLon;
 
     public SituationAdapter(OnSituationClickListener listener) {
         this.listener = listener;
@@ -51,6 +56,16 @@ public class SituationAdapter extends RecyclerView.Adapter<SituationAdapter.View
             items.addAll(newItems);
         }
         notifyDataSetChanged();
+    }
+
+    public void setDistanceOrigin(double lat, double lon) {
+        showDistance = true;
+        originLat = lat;
+        originLon = lon;
+    }
+
+    public void clearDistanceOrigin() {
+        showDistance = false;
     }
 
     /** Highlights the selected card (useful in landscape where the details are shown alongside). */
@@ -70,7 +85,9 @@ public class SituationAdapter extends RecyclerView.Adapter<SituationAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Situation s = items.get(position);
         boolean isSelected = s.getSituationId() != null && s.getSituationId().equals(selectedId);
-        holder.bind(s, isSelected, listener);
+        String distance = showDistance
+                ? String.format(Locale.UK, "%.1f km away", s.distanceKmTo(originLat, originLon)) : null;
+        holder.bind(s, isSelected, distance, listener);
     }
 
     @Override
@@ -98,7 +115,7 @@ public class SituationAdapter extends RecyclerView.Adapter<SituationAdapter.View
             metaText = itemView.findViewById(R.id.metaText);
         }
 
-        void bind(Situation s, boolean isSelected, OnSituationClickListener listener) {
+        void bind(Situation s, boolean isSelected, String distance, OnSituationClickListener listener) {
             Context context = itemView.getContext();
 
             icon.setImageResource(SituationStyle.iconFor(s.getType()));
@@ -126,6 +143,10 @@ public class SituationAdapter extends RecyclerView.Adapter<SituationAdapter.View
                 }
                 metaText.setText(meta);
                 metaText.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
+            }
+
+            if (distance != null) {
+                metaText.setText(distance + " · " + metaText.getText());
             }
 
             card.setStrokeWidth(isSelected ? dp(context, 2) : 0);

@@ -26,8 +26,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.ahmad_haziq_s2337383.data.FeedStatus;
 import com.example.ahmad_haziq_s2337383.model.SituationCategory;
 import com.example.ahmad_haziq_s2337383.ui.DetailFragment;
-import com.example.ahmad_haziq_s2337383.ui.PlaceholderFragment;
+import com.example.ahmad_haziq_s2337383.ui.SearchFragment;
 import com.example.ahmad_haziq_s2337383.ui.SituationListFragment;
+import com.example.ahmad_haziq_s2337383.ui.TrafficMapFragment;
 import com.example.ahmad_haziq_s2337383.viewmodel.TrafficViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationBarView;
@@ -103,6 +104,15 @@ public class MainActivity extends AppCompatActivity {
         };
         getOnBackPressedDispatcher().addCallback(this, closeDetailOnBack);
         viewModel.getDetailOpen().observe(this, this::updateDetailPanel);
+
+        // other screens can ask for the map tab (e.g. "Show on map")
+        viewModel.getTabRequest().observe(this, request -> {
+            if (TrafficViewModel.TAB_MAP.equals(request)) {
+                viewModel.clearTabRequest();
+                viewModel.closeDetail(); // needed if the map tab is already the selected one
+                nav.setSelectedItemId(R.id.nav_map);
+            }
+        });
     }
 
     private void showTab(int tabId) {
@@ -138,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
         if (tabId == R.id.nav_roadworks) {
             return SituationListFragment.newInstance(SituationCategory.ROADWORKS);
         } else if (tabId == R.id.nav_search) {
-            return PlaceholderFragment.newInstance("Search by road and by distance – coming next");
+            return new SearchFragment();
         } else if (tabId == R.id.nav_map) {
-            return PlaceholderFragment.newInstance("Map – coming next");
+            return new TrafficMapFragment();
         }
         return SituationListFragment.newInstance(SituationCategory.INCIDENT);
     }

@@ -49,6 +49,8 @@ public class DetailFragment extends Fragment {
     private TextView headerSubtitle;
     private TextView commentText;
     private LinearLayout sections;
+    private MaterialButton showOnMapButton;
+    private Situation current;
 
     @Nullable
     @Override
@@ -69,6 +71,12 @@ public class DetailFragment extends Fragment {
         headerSubtitle = view.findViewById(R.id.headerSubtitle);
         commentText = view.findViewById(R.id.commentText);
         sections = view.findViewById(R.id.sections);
+        showOnMapButton = view.findViewById(R.id.showOnMapButton);
+        showOnMapButton.setOnClickListener(v -> {
+            if (current != null) {
+                viewModel.showOnMap(current);
+            }
+        });
 
         // Close button only makes sense in portrait, where the details cover the list
         MaterialButton closeButton = view.findViewById(R.id.closeButton);
@@ -80,6 +88,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void show(Situation s) {
+        current = s;
         if (s == null) {
             scrollView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
@@ -98,6 +107,7 @@ public class DetailFragment extends Fragment {
         }
         headerSubtitle.setText(subtitle);
         commentText.setText(s.getComment() != null ? s.getComment() : "No description given");
+        showOnMapButton.setVisibility(s.getLocation().hasCoordinates() ? View.VISIBLE : View.GONE);
 
         sections.removeAllViews();
         addWhenSection(s);

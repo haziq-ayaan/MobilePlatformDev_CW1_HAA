@@ -21,6 +21,29 @@
     <string name="detail_empty">Pick an incident or roadworks entry to see its details here.</string>
     <string name="back_to_list">← Back to list</string>
 
+    <string name="show_on_map">Show on map</string>
+
+    <string name="search_by_road">By road</string>
+    <string name="search_by_distance">By distance</string>
+    <string name="search_road_hint">Road or place</string>
+    <string name="search_road_helper">e.g. M8, A9, A82 or Kingston Bridge</string>
+    <string name="search_road_empty">Type a road number or place</string>
+    <string name="search_from">From</string>
+    <string name="search_radius">Within %1$d km</string>
+    <string name="search_radius_description">Search distance in kilometres</string>
+    <string name="search_button">Search</string>
+    <string name="search_show_on_map">Show results on map</string>
+    <string name="search_pick_type">Pick incidents, roadworks or both</string>
+    <string name="search_finding_location">Finding your location…</string>
+    <string name="location_denied">Location permission refused – searching from GCU, Glasgow instead</string>
+    <string name="location_unavailable">Could not get your location – searching from GCU, Glasgow instead</string>
+
+    <string name="map_all">All</string>
+    <string name="map_search_results">Search results</string>
+    <string name="map_selected">Selected</string>
+    <string name="map_no_search">No search yet – use the Search tab first</string>
+    <string name="map_nothing_selected">Nothing selected yet</string>
+
     <string name="about_title">About</string>
     <string name="about_message">Contains Traffic Scotland data (DATEX II feeds: unplanned events and current roadworks).\n\nData is downloaded when the app starts and then every hour. If there is no connection, the last downloaded data is shown.\n\nIcons: drawn for this app by Haziq Ayaan Ahmad (own work).\n\nMobile Platform Development coursework – S2337383</string>
 </resources>

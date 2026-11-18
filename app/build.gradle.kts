@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.lifecycle.livedata)
     implementation(libs.fragment)
     implementation(libs.recyclerview)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)

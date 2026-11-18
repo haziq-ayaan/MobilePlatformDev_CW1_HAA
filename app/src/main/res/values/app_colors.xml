@@ -22,6 +22,11 @@
     <color name="status_loading_bg">#ECEFF1</color>
     <color name="status_loading_text">#37474F</color>
 
+    <!-- Map -->
+    <color name="map_incident_line">#D32F2F</color>
+    <color name="map_search_area">#1E88E5</color>
+    <color name="map_search_area_fill">#221E88E5</color>
+
     <color name="road_badge">#00703C</color>
     <color name="text_secondary">#78909C</color>
 </resources>
