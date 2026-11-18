@@ -16,7 +16,10 @@ import com.example.ahmad_haziq_s2337383.model.TrafficFeed;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -42,6 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TrafficRepository {
     private static final String TAG = "TrafficRepository";
 
+    private final Context appContext;
     private final TrafficApi api;
     private final FeedCache cache;
 
@@ -55,7 +59,7 @@ public class TrafficRepository {
             new MutableLiveData<>(new FeedStatus(FeedStatus.State.LOADING, 0, null));
 
     public TrafficRepository(Context context) {
-        Context appContext = context.getApplicationContext();
+        appContext = context.getApplicationContext();
         api = new TrafficApi(new ApiKeys(appContext));
         cache = new FeedCache(appContext);
     }
@@ -167,7 +171,36 @@ public class TrafficRepository {
                 Log.e(TAG, "Cached " + category + " data is unreadable", e);
             }
         }
+
+        if (FeedConfig.USE_SAMPLE_DATA_FALLBACK) {
+            TrafficFeed sample = loadSampleFeed(category);
+            if (sample != null) {
+                long time = sample.getPublicationTime() != null
+                        ? sample.getPublicationTime().toInstant().toEpochMilli() : 0;
+                return new FeedResult(sample, true, time, problem + " – using SAMPLE data");
+            }
+        }
         return new FeedResult(null, false, 0, problem);
+    }
+
+    /** DEVELOPMENT ONLY: parses the sample XML bundled in the assets folder. */
+    private TrafficFeed loadSampleFeed(SituationCategory category) {
+        String asset = category == SituationCategory.INCIDENT
+                ? FeedConfig.SAMPLE_INCIDENTS_ASSET : FeedConfig.SAMPLE_ROADWORKS_ASSET;
+        try (InputStream in = appContext.getAssets().open(asset)) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            byte[] buffer = new byte[8192];
+            int n;
+            while ((n = in.read(buffer)) != -1) {
+                bytes.write(buffer, 0, n);
+            }
+            String xml = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
+            Log.w(TAG, "Using SAMPLE " + category + " data from assets/" + asset);
+            return new TrafficXmlParser().parse(xml, category);
+        } catch (IOException | XmlPullParserException e) {
+            Log.e(TAG, "Could not load sample " + category + " data", e);
+            return null;
+        }
     }
 
     /** Network hiccups happen on mobile, so a failed download is tried once more after 2 seconds. */

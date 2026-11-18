@@ -24,6 +24,15 @@ public final class FeedConfig {
      */
     public static final long AUTO_UPDATE_MINUTES = 60;
 
+    /**
+     * DEVELOPMENT ONLY: when the live feed and the saved copy both fail, load the sample XML files
+     * bundled in app/src/main/assets so the interface can still be built and tested.
+     * TODO: set to false (and delete the assets folder) before submission – the final app must use live data.
+     */
+    public static final boolean USE_SAMPLE_DATA_FALLBACK = true;
+    public static final String SAMPLE_INCIDENTS_ASSET = "sample_unplanned.xml";
+    public static final String SAMPLE_ROADWORKS_ASSET = "sample_roadworks.xml";
+
     /** Network timeouts, so a bad connection fails quickly instead of hanging. */
     public static final int CONNECT_TIMEOUT_MS = 15000;
     public static final int READ_TIMEOUT_MS = 30000;
