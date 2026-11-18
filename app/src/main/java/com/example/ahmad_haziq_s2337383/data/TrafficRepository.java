@@ -5,7 +5,11 @@
 package com.example.ahmad_haziq_s2337383.data;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -48,6 +52,7 @@ public class TrafficRepository {
     private static final String TAG = "TrafficRepository";
 
     private final Context appContext;
+    private final ConnectivityManager connectivityManager;
     private final TrafficApi api;
     private final FeedCache cache;
 
@@ -64,7 +69,22 @@ public class TrafficRepository {
         appContext = context.getApplicationContext();
         api = new TrafficApi(new ApiKeys(appContext));
         cache = new FeedCache(appContext);
+        connectivityManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
+
+    // When the phone gets a connection back, refresh straight away if we were showing old data,
+    // rather than waiting for the next scheduled update
+    private final ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network network) {
+            FeedStatus current = status.getValue();
+            if (current != null && (current.getState() == FeedStatus.State.OFFLINE
+                    || current.getState() == FeedStatus.State.ERROR)) {
+                Log.d(TAG, "Connection is back - refreshing");
+                refresh();
+            }
+        }
+    };
 
     // ------------------------------------------------------------------ data for the ViewModel
 
@@ -89,6 +109,13 @@ public class TrafficRepository {
         }
         updateScheduler = Executors.newSingleThreadScheduledExecutor();
         updateScheduler.scheduleWithFixedDelay(this::refresh, 0, intervalMinutes, TimeUnit.MINUTES);
+        if (connectivityManager != null) {
+            try {
+                connectivityManager.registerDefaultNetworkCallback(networkCallback);
+            } catch (SecurityException | IllegalArgumentException e) {
+                Log.e(TAG, "Could not listen for network changes", e);
+            }
+        }
         Log.d(TAG, "Auto-update every " + intervalMinutes + " min");
     }
 
@@ -109,6 +136,13 @@ public class TrafficRepository {
 
     /** Stops all background threads. Called when the ViewModel is destroyed. */
     public void shutdown() {
+        if (connectivityManager != null) {
+            try {
+                connectivityManager.unregisterNetworkCallback(networkCallback);
+            } catch (IllegalArgumentException e) {
+                // was never registered - nothing to do
+            }
+        }
         if (updateScheduler != null) {
             updateScheduler.shutdownNow();
         }

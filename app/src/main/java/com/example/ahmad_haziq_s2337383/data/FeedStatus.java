@@ -60,7 +60,8 @@ public class FeedStatus {
                 return "Live data · updated " + time;
             case OFFLINE:
                 return "Offline – showing data from " + time
-                        + (message != null ? " (" + message + ")" : "");
+                        + (message != null ? " (" + message + ")" : "")
+                        + ". Will update when the connection is back.";
             case ERROR:
             default:
                 return message != null ? message : "No data available";
