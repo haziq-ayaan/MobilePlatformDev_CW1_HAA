@@ -138,6 +138,10 @@ public class Situation {
         return impact.getDelayLevel();
     }
 
+    public DurationBand getDurationBand() {
+        return DurationBand.of(validity);
+    }
+
     // ---------- getters and setters ----------
 
     public SituationCategory getCategory() {

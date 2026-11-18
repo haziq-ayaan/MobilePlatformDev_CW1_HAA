@@ -19,11 +19,13 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -126,12 +128,26 @@ public class TrafficRepository {
 
         // Only replace what is on screen when we actually got data
         if (incidentResult.feed != null) {
-            incidents.postValue(incidentResult.feed.getSituations());
+            incidents.postValue(newestFirst(incidentResult.feed.getSituations()));
         }
         if (roadworksResult.feed != null) {
-            roadworks.postValue(roadworksResult.feed.getSituations());
+            roadworks.postValue(newestFirst(roadworksResult.feed.getSituations()));
         }
         status.postValue(combineStatus(incidentResult, roadworksResult));
+    }
+
+    /** Sorts by start time, most recent first (situations with no start time go last). */
+    private List<Situation> newestFirst(List<Situation> list) {
+        List<Situation> sorted = new ArrayList<>(list);
+        Collections.sort(sorted, (a, b) -> {
+            OffsetDateTime ta = a.getValidity().getStartTime();
+            OffsetDateTime tb = b.getValidity().getStartTime();
+            if (ta == null && tb == null) return 0;
+            if (ta == null) return 1;
+            if (tb == null) return -1;
+            return tb.compareTo(ta);
+        });
+        return sorted;
     }
 
     /** Downloads and parses one feed; if that fails, falls back to the saved copy. */

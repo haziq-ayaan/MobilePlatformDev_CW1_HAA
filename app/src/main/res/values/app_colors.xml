@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Roadworks duration colour coding -->
+    <color name="duration_short">#2E7D32</color>
+    <color name="duration_medium">#F9A825</color>
+    <color name="duration_long">#C62828</color>
+    <color name="duration_unknown">#9E9E9E</color>
+
+    <!-- Delay levels -->
+    <color name="delay_none">#607D8B</color>
+    <color name="delay_delays">#EF6C00</color>
+    <color name="delay_long">#C62828</color>
+    <color name="delay_very_long">#880E4F</color>
+
+    <!-- Status line -->
+    <color name="status_live_bg">#E8F5E9</color>
+    <color name="status_live_text">#1B5E20</color>
+    <color name="status_offline_bg">#FFF3E0</color>
+    <color name="status_offline_text">#BF360C</color>
+    <color name="status_error_bg">#FFEBEE</color>
+    <color name="status_error_text">#B71C1C</color>
+    <color name="status_loading_bg">#ECEFF1</color>
+    <color name="status_loading_text">#37474F</color>
+
+    <color name="road_badge">#00703C</color>
+    <color name="text_secondary">#78909C</color>
+</resources>
