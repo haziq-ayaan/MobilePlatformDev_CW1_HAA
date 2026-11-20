@@ -7,29 +7,26 @@ package com.example.ahmad_haziq_s2337383.data;
 /** Fixed settings for downloading the Traffic Scotland feeds. */
 public final class FeedConfig {
 
-    /** Unplanned events (incidents) – the URL given in the coursework brief. */
+    /** Unplanned events (incidents) */
     public static final String INCIDENTS_URL =
             "https://datex2.trafficscotland.org/rest/2.3/publications/UnplannedEvents/Content.xml";
 
     /**
      * Current roadworks.
-     * TODO: copy the exact "Current Roadworks" Content link from the Traffic Scotland
-     * DATEX II developer guide ("Publication Endpoints and Method") and paste it here.
      */
     public static final String ROADWORKS_URL = "https://datex2.trafficscotland.org/rest/2.3/publications/CurrentRoadworks/Content.xml";
 
     /**
      * How often the data is downloaded again automatically.
-     * The brief asks for every hour (60); use a small value such as 2 when recording the demo video.
+     * The brief asks for every hour (60); ensure I use a small value such as 2 when recording the demo video.
      */
     public static final long AUTO_UPDATE_MINUTES = 60;
 
     /**
      * DEVELOPMENT ONLY: when the live feed and the saved copy both fail, load the sample XML files
      * bundled in app/src/main/assets so the interface can still be built and tested.
-     * TODO: set to false (and delete the assets folder) before submission – the final app must use live data.
      */
-    public static final boolean USE_SAMPLE_DATA_FALLBACK = true;
+    public static final boolean USE_SAMPLE_DATA_FALLBACK = false;
     public static final String SAMPLE_INCIDENTS_ASSET = "sample_unplanned.xml";
     public static final String SAMPLE_ROADWORKS_ASSET = "sample_roadworks.xml";
 
