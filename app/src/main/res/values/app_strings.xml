@@ -45,5 +45,5 @@
     <string name="map_nothing_selected">Nothing selected yet</string>
 
     <string name="about_title">About</string>
-    <string name="about_message">Contains Traffic Scotland data (DATEX II feeds: unplanned events and current roadworks).\n\nData is downloaded when the app starts and then every hour. If there is no connection, the last downloaded data is shown.\n\nIcons: drawn for this app by Haziq Ayaan Ahmad (own work).\n\nMobile Platform Development coursework – S2337383</string>
+    <string name="about_message">Contains Traffic Scotland data (DATEX II feeds: unplanned events and current roadworks).\n\nData is downloaded when the app starts and then every hour. If there is no connection, the last downloaded data is shown.\n\nIcons: original vector drawings created for this app (no third-party icons used, no licence restrictions).\n\nMobile Platform Development coursework – S2337383</string>
 </resources>
